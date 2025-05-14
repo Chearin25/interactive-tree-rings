@@ -183,4 +183,12 @@
       }
     </script>
   </body>
-</html>
+</html> function touchMoved() {
+  let now = millis();
+  if (now - lastRingTime > 400) {
+    rings.push(new Ring(mouseX, mouseY));
+    lastRingTime = now;
+    showNextLine();
+  }
+}
+
