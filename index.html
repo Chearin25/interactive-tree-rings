@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>나이테 퍼지는 시</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: #0e0e0e;
+        color: white;
+        font-family: 'Nanum Gothic', sans-serif;
+        overflow: hidden;
+      }
+      #poem {
+        position: absolute;
+        bottom: 40px;
+        width: 100%;
+        text-align: center;
+        font-size: 1.2rem;
+        opacity: 0;
+        transition: opacity 2s;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.js"></script>
+    <div id="poem"></div>
+    <script>
+      let rings = [];
+      let poemLines = [
+        "손끝에 얹어 차갑게 식어가는 숨결의 심장박동을 듣습니다.",
+        "모든 갈등의 뿌리는 확신이라 했습니다.",
+        "나의 나무는 그 어떤 시간에도 묶여 있지 않았습니다.",
+        "흐르는 존재 속에서 나는 사라질 수 있을까.",
+        "기록되지 않은 고통은 어디로 사라질까요."
+      ];
+      let currentLine = 0;
+      let lastRingTime = 0;
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        noFill();
+        stroke(255, 80);
+      }
+
+      function draw() {
+        background(14, 14, 14, 30);
+        for (let i = rings.length - 1; i >= 0; i--) {
+          rings[i].update();
+          rings[i].display();
+          if (rings[i].radius > width * 0.75) {
+            rings.splice(i, 1);
+          }
+        }
+      }
+
+      function mouseMoved() {
+        let now = millis();
+        if (now - lastRingTime > 400) {
+          rings.push(new Ring(mouseX, mouseY));
+          lastRingTime = now;
+          showNextLine();
+        }
+      }
+
+      class Ring {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          this.radius = 5;
+          this.alpha = 150;
+        }
+        update() {
+          this.radius += 1.5;
+          this.alpha -= 0.7;
+        }
+        display() {
+          stroke(255, this.alpha);
+          ellipse(this.x, this.y, this.radius * 2);
+        }
+      }
+
+      function showNextLine() {
+        const poem = document.getElementById("poem");
+        poem.style.opacity = 0;
+        setTimeout(() => {
+          poem.innerText = poemLines[currentLine];
+          poem.style.opacity = 1;
+          currentLine = (currentLine + 1) % poemLines.length;
+        }, 400);
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+    </script>
+  </body>
+</html>
